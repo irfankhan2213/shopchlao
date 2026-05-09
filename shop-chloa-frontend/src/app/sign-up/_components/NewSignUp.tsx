@@ -496,7 +496,7 @@ function StoreInfoStep({
                   <PhoneInput
                     id="phoneNumber"
                     {...field}
-                    onChange={(value, countryCode, number) => {
+                    onChange={(value: string, countryCode: any, number: any) => {
                       form.setValue("phoneNumber", value);
 
                       if (form.formState.isSubmitted) {
