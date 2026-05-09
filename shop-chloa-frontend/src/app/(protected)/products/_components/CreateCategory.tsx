@@ -26,7 +26,7 @@ const formSchema = z.object({
 interface CreateCategoryProps {
   refetchCategories: () => void;
   setCategory: (category: any) => void;
-  children?: React.ReactNode;
+  children?: any;
 }
 
 const CreateCategory: React.FC<CreateCategoryProps> = ({

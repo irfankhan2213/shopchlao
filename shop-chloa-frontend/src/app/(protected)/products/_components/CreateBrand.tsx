@@ -38,7 +38,7 @@ const formSchema = z.object({
 interface CreateBrandProps {
   refetchBrands: () => void;
   setBrand: (brand: any) => void;
-  children: React.ReactNode;
+  children: any;
 }
 
 const CreateBrand: React.FC<CreateBrandProps> = ({
