@@ -7,18 +7,6 @@ export const publicRoutes = [
   "/healthcheck",
   "/privacy",
   "/terms",
-  "/",
-  "/sign-in",
-  "/dashboard",
-  "/products",
-  "/sales",
-  "/alerts",
-  "/categories",
-  "/customers",
-  "/reports",
-  "/settings",
-  "/stock",
-  "/brands",
 ];
 
 /**
