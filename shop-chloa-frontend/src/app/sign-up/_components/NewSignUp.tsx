@@ -484,37 +484,9 @@ function StoreInfoStep({
           )}
         />
 
-        <FormField
-          control={form.control}
+        <PhoneInput
           name="phoneNumber"
-          render={({ field }) => {
-            return (
-              <FormItem>
-                <FormLabel>
-                  Contact Number
-                  <span className="text-red-600">*</span>
-                </FormLabel>
-                <FormControl>
-                  <PhoneInput
-                    id="phoneNumber"
-                    {...field}
-                    onChange={(value: string, countryCode: any, number: any) => {
-                      form.setValue("phoneNumber", value);
-
-                      if (form.formState.isSubmitted) {
-                        form.trigger("phoneNumber");
-                      }
-                      return;
-                    }}
-                    value={field.value}
-                    placeholder={"Enter contact number"}
-                    name="phone"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
+          placeholder="Enter contact number"
         />
 
         <FormField

@@ -29,7 +29,7 @@ export default function PhoneInputComp({
     <FormField
       render={({ field: { onChange, value } }) => (
         <FormItem>
-          <FormLabel>Mobile Number<span className="text-red-600">*</span></FormLabel>
+          <FormLabel>Contact Number<span className="text-red-600">*</span></FormLabel>
           <FormControl>
             <PhoneInput
               onChange={(e, data: CountryData) => {
