@@ -37,7 +37,7 @@ const Popup: React.FC<PopupProps> = ({
               <DialogTitle>{title}</DialogTitle>
             </DialogHeader>
           )}
-          {children}
+          {children as any}
         </DialogContent>
       </Dialog>
     )
@@ -51,7 +51,7 @@ const Popup: React.FC<PopupProps> = ({
             <DrawerTitle>{title}</DrawerTitle>
           </DrawerHeader>
         )}
-        {children}
+        {children as any}
       </DrawerContent>
     </Drawer>
   )
