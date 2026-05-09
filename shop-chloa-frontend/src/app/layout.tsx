@@ -37,7 +37,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} ${playfairDisplay.variable} `}>
         <AppRouterCacheProvider>
-          {children}
+          {children as any}
 
           <SonnerToaster />
         </AppRouterCacheProvider>
