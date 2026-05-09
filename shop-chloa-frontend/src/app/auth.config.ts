@@ -53,6 +53,7 @@ export default {
               name: user?.first_name ? `${user.first_name} ${user.last_name || ''}` : user?.email,
               role: "admin",
               token: result?.token,
+              profileCompleted: user?.profileCompleted,
             };
           } else {
             const isJson = res.headers.get("content-type")?.includes("application/json");
@@ -83,6 +84,7 @@ export default {
         token.token = user.token;
         token.email = user.email;
         token.status = user.status;
+        token.profileCompleted = user.profileCompleted;
       }
       return token;
     },
@@ -92,6 +94,7 @@ export default {
         session.user.token = token.token as string;
         session.user.email = token.email as string;
         session.user.status = token.status as string;
+        session.user.profileCompleted = token.profileCompleted as boolean;
       }
       return session;
     },

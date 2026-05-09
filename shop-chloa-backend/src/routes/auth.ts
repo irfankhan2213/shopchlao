@@ -54,9 +54,11 @@ authRoutes.post("/signup", async (req, res) => {
       message: "User registered successfully",
       token,
       user: {
+        id: user._id,
         email: user.email,
         first_name: user.first_name,
         last_name: user.last_name,
+        profileCompleted: user.profileCompleted,
       },
     });
   } catch (err) {
@@ -102,6 +104,7 @@ authRoutes.post("/login", async (req, res) => {
         email: user.email,
         first_name: user.first_name,
         last_name: user.last_name,
+        profileCompleted: user.profileCompleted,
       },
     });
   } catch (err) {

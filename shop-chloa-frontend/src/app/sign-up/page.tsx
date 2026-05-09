@@ -1,6 +1,11 @@
 
+import { Suspense } from "react";
 import NewSignup from "./_components/NewSignUp";
 
-export default async function AuthenticationPage() {
-  return <NewSignup />;
+export default function AuthenticationPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <NewSignup />
+    </Suspense>
+  );
 }

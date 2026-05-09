@@ -57,7 +57,7 @@ const userSchema = zod
   });
 type UserFormType = zod.infer<typeof userSchema>;
 
-function PersonalInfoStep({ onNext }: { onNext: (userId: string) => void }) {
+function PersonalInfoStep({ onNext }: { onNext: (userId: string, token: string) => void }) {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const form = useFormHook<UserFormType>({
@@ -161,7 +161,7 @@ function PersonalInfoStep({ onNext }: { onNext: (userId: string) => void }) {
         const user = result.user;
         const token = result.token;
 
-        onNext(user.id);
+        onNext(user.id, token);
       } else {
         const error = isJson ? result : { message: "Something went wrong." };
         console.log("error", error);
@@ -414,9 +414,11 @@ type StoreFormType = zod.infer<typeof storeSchema>;
 
 function StoreInfoStep({
   userId,
+  token,
   onBack,
 }: {
   userId: string;
+  token: string;
   onBack: () => void;
 }) {
   const form = useFormHook<StoreFormType>({
@@ -437,14 +439,27 @@ function StoreInfoStep({
   const handleStoreSubmit = async (values: StoreFormType) => {
     setApiError("");
     try {
-      const res = await fetch("/api/update-store", {
+      const backendUrl = process.env.NEXT_PUBLIC_APP_API_BASE_URL || "http://localhost:5000";
+      const res = await fetch(`${backendUrl}/api/auth/profile`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, ...values }),
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ 
+          userId, 
+          phone: values.phoneNumber,
+          shopName: values.storeName,
+          address: values.address,
+          city: values.city,
+          state: values.state
+        }),
       });
       if (!res.ok)
         throw new Error((await res.json()).message || "Store update failed");
       alert("Signup successful!");
+      // Redirect to sign in so they can log in and start using the app
+      window.location.href = "/sign-in";
     } catch (err: any) {
       setApiError(err.message || "Store update failed");
     }
@@ -618,10 +633,19 @@ function StoreInfoStep({
   );
 }
 
-export default function NewSignup() {
-  const [step, setStep] = React.useState(1);
+import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
+export default function NewSignup() {
+  const searchParams = useSearchParams();
+  const { data: session } = useSession();
+  const initialStep = searchParams.get("step") === "2" ? 2 : 1;
+  const [step, setStep] = React.useState(initialStep);
   const [userId, setUserId] = React.useState("");
+  const [token, setToken] = React.useState("");
+
+  const activeUserId = userId || (session?.user as any)?.id || "";
+  const activeToken = token || (session?.user as any)?.token || "";
 
   return (
     <div className="min-h-screen flex items-center justify-center  p-4">
@@ -652,14 +676,15 @@ export default function NewSignup() {
           <CardContent>
             {step === 1 && (
               <PersonalInfoStep
-                onNext={(id: string) => {
+                onNext={(id: string, newToken: string) => {
                   setUserId(id);
+                  setToken(newToken);
                   setStep(2);
                 }}
               />
             )}
             {step === 2 && (
-              <StoreInfoStep userId={userId} onBack={() => setStep(1)} />
+              <StoreInfoStep userId={activeUserId} token={activeToken} onBack={() => setStep(1)} />
             )}
           </CardContent>
         </Card>

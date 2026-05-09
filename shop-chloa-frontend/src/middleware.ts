@@ -36,12 +36,20 @@ export default auth((req) => {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
-      const role = req?.auth?.user?.role;
+      if (req?.auth?.user?.profileCompleted === false) {
+        // If they haven't completed their profile, stay on sign-up if they are already there
+        if (nextUrl.pathname === "/sign-up") return;
+        return NextResponse.redirect(new URL("/sign-up?step=2", nextUrl));
+      }
       return NextResponse.redirect(new URL("/", nextUrl));
     } else if (nextUrl.pathname === "/") {
       return NextResponse.redirect(new URL("/sign-in", nextUrl));
     }
     return;
+  }
+
+  if (isLoggedIn && req?.auth?.user?.profileCompleted === false) {
+    return NextResponse.redirect(new URL("/sign-up?step=2", nextUrl));
   }
 
   if (!isLoggedIn && !isPublicRoute) {
