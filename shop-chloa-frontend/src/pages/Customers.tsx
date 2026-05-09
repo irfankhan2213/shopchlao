@@ -354,7 +354,7 @@ const Customers = () => {
                   <div className="col-span-full py-12 text-center text-muted-foreground border-2 border-dashed rounded-lg">
                     <Camera className="h-12 w-12 mx-auto mb-3 opacity-20" />
                     <p>No attachments found</p>
-                    <p className="text-sm">Click "Add New Receipt" to capture an image</p>
+                    <p className="text-sm">Click &quot;Add New Receipt&quot; to capture an image</p>
                   </div>
                 )}
               </div>

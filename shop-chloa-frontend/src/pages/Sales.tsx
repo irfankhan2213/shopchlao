@@ -255,7 +255,7 @@ const Sales = () => {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Today's Sales</p>
+                <p className="text-sm font-medium text-muted-foreground">Today&apos;s Sales</p>
                 <p className="text-2xl font-bold">₹8,432</p>
               </div>
               <DollarSign className="h-8 w-8 text-success" />

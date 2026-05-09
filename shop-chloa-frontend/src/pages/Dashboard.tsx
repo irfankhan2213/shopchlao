@@ -82,7 +82,7 @@ const Dashboard = () => {
             Dashboard
           </h1>
           <p className="text-muted-foreground text-sm md:text-base">
-            Welcome back! Here's your store overview.
+            Welcome back! Here&apos;s your store overview.
           </p>
         </div>
         <Button className="bg-primary hover:bg-primary/90 w-full sm:w-auto">
