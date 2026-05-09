@@ -453,8 +453,16 @@ function StoreInfoStep({
           state: values.state
         }),
       });
-      if (!res.ok)
-        throw new Error((await res.json()).message || "Store update failed");
+      if (!res.ok) {
+        const errorData = await res.text();
+        let errorMessage = "Store update failed";
+        try {
+          errorMessage = JSON.parse(errorData).message || errorMessage;
+        } catch {
+          errorMessage = errorData;
+        }
+        throw new Error(errorMessage);
+      }
       alert("Signup successful!");
       // Redirect to sign in so they can log in and start using the app
       window.location.href = "/sign-in";
