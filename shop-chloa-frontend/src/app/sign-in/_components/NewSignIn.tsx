@@ -51,7 +51,7 @@ export default function NewSignIn() {
         description: "Welcome back!",
       });
       
-      window.location.href = "/dashboard";
+      window.location.href = "/";
     } catch (err: any) {
       setApiError(err.message || "Login failed");
     }
