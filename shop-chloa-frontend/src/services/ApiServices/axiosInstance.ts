@@ -10,11 +10,11 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (request) => {
-    // const session = await getSession();
-    // const token = session?.user?.token;
-    // if (token) {
-    //   request.headers.authorization = `${token}`;
-    // }
+    const session = await getSession();
+    const token = (session?.user as any)?.token;
+    if (token) {
+      request.headers.authorization = `Bearer ${token}`;
+    }
     return request;
   },
   (error) => {
