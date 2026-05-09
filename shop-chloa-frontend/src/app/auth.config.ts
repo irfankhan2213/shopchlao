@@ -78,7 +78,7 @@ export default {
   ],
 
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: User }) {
+    async jwt({ token, user }: { token: JWT; user?: any }) {
       if (user) {
         token.role = user.role;
         token.token = user.token;
@@ -88,7 +88,7 @@ export default {
       }
       return token;
     },
-    async session({ session, token }: { session: Session; token: JWT }) {
+    async session({ session, token }: { session: any; token: any }) {
       if (token) {
         session.user.role = token.role as "admin" | "user";
         session.user.token = token.token as string;
