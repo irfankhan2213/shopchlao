@@ -44,7 +44,9 @@ export default {
           });
 
           if (res.ok) {
-            const result = await res.json();
+            const isJson = res.headers.get("content-type")?.includes("application/json");
+            const result = isJson ? await res.json() : null;
+            if (!result) return null;
             const user = result?.user;
             return {
               ...user,
@@ -53,10 +55,16 @@ export default {
               token: result?.token,
             };
           } else {
-            const error = await res.json();
-            console.log("Auth error:", error);
-            if (error.message) {
-              throw new InvalidLoginError(error.message || "Invalid credentials");
+            const isJson = res.headers.get("content-type")?.includes("application/json");
+            if (isJson) {
+              const error = await res.json();
+              console.log("Auth error:", error);
+              if (error.message) {
+                throw new InvalidLoginError(error.message || "Invalid credentials");
+              }
+            } else {
+               console.log("Auth error: Received non-JSON response:", res.status, res.statusText);
+               throw new InvalidLoginError("Server returned an invalid response. Check backend URL.");
             }
             return null;
           }

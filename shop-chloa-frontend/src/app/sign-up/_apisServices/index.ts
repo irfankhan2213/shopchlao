@@ -1,7 +1,8 @@
 import axiosInstance from "@/services/ApiServices/axiosInstance";
 import apiRoutes from "@/services/ApiServices/apiRoutes";
-const apiServerUrl =
-  process.env.NEXT_PUBLIC_APP_API_BASE_URL || "http://localhost:3000";
+const apiServerUrl = process.env.NEXT_PUBLIC_APP_API_BASE_URL 
+  ? `${process.env.NEXT_PUBLIC_APP_API_BASE_URL}/api` 
+  : "http://localhost:3000/api";
 
 export const signUpApi = async (data: {
   email: string;
