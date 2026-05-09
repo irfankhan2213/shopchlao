@@ -11,6 +11,7 @@ type propsType = {
   name: string;
   defaultValue?: string;
   bgColor?: string;
+  [key: string]: any;
 };
 
 export default function PhoneInputComp({
