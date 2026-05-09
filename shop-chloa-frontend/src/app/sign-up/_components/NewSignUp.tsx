@@ -148,20 +148,22 @@ function PersonalInfoStep({ onNext }: { onNext: (userId: string) => void }) {
   const handleUserSubmit = async (values: UserFormType) => {
     setApiError("");
     try {
-      const res = await signUpApi({
+      const response = await signUpApi({
         email: values.email,
         password: values.password,
         first_name: values.firstName,
         last_name: values.lastName,
       });
-      if (res.ok) {
-        const result = await res.json();
+      const isJson = response.headers.get("content-type")?.includes("application/json");
+      const result = isJson ? await response.json() : null;
+
+      if (response.ok && result) {
         const user = result.user;
         const token = result.token;
 
         onNext(user.id);
       } else {
-        const error = await res.json();
+        const error = isJson ? result : { message: "Something went wrong." };
         console.log("error", error);
         if (error.message) {
           handleError([error.message]);
