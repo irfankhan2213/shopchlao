@@ -39,7 +39,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { signUpApi } from "../_apisServices";
-import PhoneInput from "@/components/fields/PhoneInput/PhoneInput";
+import PhoneInput from "@/components/fields/PhoneInput";
 import { IndianStates } from "@/lib/constant";
 import Autocomplete from "@/components/mui/Autocomplete";
 
