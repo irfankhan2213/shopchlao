@@ -1,0 +1,16 @@
+version: '3'
+services:
+  partner-portal:
+    image: partner-portal-production-image
+    container_name: partner-portal-production
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: Production
+    ports:
+      - ${EXPOSE_PORT:-3001}:3000
+    restart: always
+    environment:
+      - EXPOSE_PORT=${EXPOSE_PORT}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - NEXT_PUBLIC_APP_API_BASE_URL=${NEXT_PUBLIC_APP_API_BASE_URL}

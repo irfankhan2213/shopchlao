@@ -1,0 +1,20 @@
+const apiRoutes = {
+  GET_USER: "/auth/user",
+  SIGN_UP: "/auth/signup",
+  UPDATE_STORE: "/auth/profile",
+  SIGN_IN: "/auth/sign_in",
+  VERIFY_OTP: "/auth/verify-otp",
+  SEND_OTP: "/auth/send-otp",
+  LEADS: "/v2/partner_leads",
+  BULK_UPLOAD_LEADS: "/v2/partner_leads/bulk_upload",
+  PARTNER_PAYOUTS: "/v1/partner_payout",
+  RESET_PASSWORD: "/v1/partner_users/password",
+  TEAM_MEMBERS: "/v2/partner_users/team_members",
+  UPDATE_TEAM_MEMBER: "/v2/partner_users/update_team_member",
+  ADD_TEAM_MEMBER: "/v2/partner_users/add_team_member",
+  BRANCHES: "/v2/branches",
+  REASSIGNABLE_PARTNER_USERS: "/v2/partner_users/reassignable_partner_users",
+  REASSIGN_LEADS: "/v2/partner_users/reassign_leads",
+  ACTIVATE_USER: "/v2/partner_users/activate_user",
+};
+export default apiRoutes;
