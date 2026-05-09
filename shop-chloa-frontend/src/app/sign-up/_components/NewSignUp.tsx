@@ -401,7 +401,6 @@ function PersonalInfoStep({ onNext }: { onNext: (userId: string, token: string) 
 
 const storeSchema = zod.object({
   storeName: zod.string().min(1, "Store name is required"),
-  businessType: zod.string().min(1, "Business type is required"),
   phoneNumber: zod.string().min(1, "Phone number is required"),
   address: zod.string().min(1, "Address is required"),
   city: zod.string().min(1, "City is required"),
@@ -425,7 +424,6 @@ function StoreInfoStep({
     resolver: zodResolverHook(storeSchema),
     defaultValues: {
       storeName: "",
-      businessType: "",
       phoneNumber: "",
       address: "",
       city: "",
