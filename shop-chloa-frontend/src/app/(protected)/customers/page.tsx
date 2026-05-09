@@ -1,4 +1,4 @@
-import Customers from "@/pages/Customers";
+import Customers from "@/views/Customers";
 
 const CustomersPage = () => {
   return <Customers />;

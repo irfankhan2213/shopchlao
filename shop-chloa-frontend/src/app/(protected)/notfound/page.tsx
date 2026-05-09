@@ -1,4 +1,4 @@
-import NotFound from "@/pages/NotFound"
+import NotFound from "@/views/NotFound"
 
 // Not Found page content from previous migration
 const NotFoundPage = () => {

@@ -1,4 +1,4 @@
-import Sales from "@/pages/Sales"
+import Sales from "@/views/Sales"
 
 // Sales page content from previous migration
 const SalesPage = () => {

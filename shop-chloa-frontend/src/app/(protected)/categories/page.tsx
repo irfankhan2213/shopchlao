@@ -1,4 +1,4 @@
-import Categories from "@/pages/Categories";
+import Categories from "@/views/Categories";
 
 
 const CategoriesPage = () => {

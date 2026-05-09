@@ -1,4 +1,4 @@
-import Stock from "@/pages/Stock";
+import Stock from "@/views/Stock";
 
 const StockPage = () => {
     return <Stock />

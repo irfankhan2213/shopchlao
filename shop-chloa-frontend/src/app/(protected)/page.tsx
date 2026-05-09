@@ -1,6 +1,6 @@
 // ...existing code...
 
-import Dashboard from "@/pages/Dashboard"
+import Dashboard from "@/views/Dashboard"
 
 // Dashboard page content from previous migration
 const DashboardPage = () => {

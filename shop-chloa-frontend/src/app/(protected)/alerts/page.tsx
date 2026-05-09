@@ -1,4 +1,4 @@
-import Alerts from "@/pages/Alerts";
+import Alerts from "@/views/Alerts";
 
 const AlertsPage = () => {
   return <Alerts />;
