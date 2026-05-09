@@ -36,7 +36,7 @@ export default auth((req) => {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
-      if (req?.auth?.user?.profileCompleted === false) {
+      if ((req?.auth?.user as any)?.profileCompleted === false) {
         // If they haven't completed their profile, stay on sign-up if they are already there
         if (nextUrl.pathname === "/sign-up") return;
         return NextResponse.redirect(new URL("/sign-up?step=2", nextUrl));
@@ -48,7 +48,7 @@ export default auth((req) => {
     return;
   }
 
-  if (isLoggedIn && req?.auth?.user?.profileCompleted === false) {
+  if (isLoggedIn && (req?.auth?.user as any)?.profileCompleted === false) {
     return NextResponse.redirect(new URL("/sign-up?step=2", nextUrl));
   }
 
