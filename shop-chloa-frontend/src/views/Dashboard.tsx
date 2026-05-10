@@ -6,8 +6,10 @@ import {
   AlertTriangle,
   DollarSign,
   ShoppingCart,
-  Calendar,
+  Users,
   Eye,
+  PlusCircle,
+  CreditCard
 } from "lucide-react";
 import {
   Card,
@@ -19,110 +21,145 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
-import {
-  getExpiringLots,
-  getStockInventory,
-  getStockSummary,
-} from "@/services/ApiServices/stock";
+import { getDashboardStats } from "@/services/ApiServices/reports";
+import { getCustomers } from "@/services/ApiServices/customers";
+import { getStockSummary } from "@/services/ApiServices/stock";
+import Link from "next/link";
+import { Customer } from "@/types/app";
 
 const Dashboard = () => {
+  const { data: dashboardStats, isLoading: isLoadingStats } = useQuery({
+    queryKey: ["dashboard-stats"],
+    queryFn: getDashboardStats,
+  });
+
   const { data: summary } = useQuery({
     queryKey: ["stock-summary"],
     queryFn: getStockSummary,
   });
-  const { data: expiringItems = [], isLoading: isLoadingExpiring } = useQuery({
-    queryKey: ["expiring-lots", 7],
-    queryFn: () => getExpiringLots(7),
+
+  const { data: customers = [], isLoading: isLoadingCustomers } = useQuery({
+    queryKey: ["customers"],
+    queryFn: getCustomers,
   });
-  const { data: stockItems = [], isLoading: isLoadingInventory } = useQuery({
-    queryKey: ["stock-inventory"],
-    queryFn: getStockInventory,
-  });
+
+  const pendingUdhaarCustomers = customers
+    .filter((c: any) => c.totalUdhaar > 0)
+    .sort((a: any, b: any) => b.totalUdhaar - a.totalUdhaar)
+    .slice(0, 5);
+
   const statsCards = [
     {
-      title: "Total Products",
-      value: String(summary?.total ?? 0),
-      change: "",
-      trend: "up",
-      icon: Package,
+      title: "Pending Udhaar",
+      value: `₹${dashboardStats?.totalPendingUdhaar || 0}`,
+      subtitle: "Total outstanding",
+      icon: AlertTriangle,
+      color: "text-destructive",
+      bg: "bg-destructive/10",
+    },
+    {
+      title: "Today's Sales",
+      value: `₹${dashboardStats?.todaysSales || 0}`,
+      subtitle: `₹${dashboardStats?.todaysPaid || 0} received today`,
+      icon: DollarSign,
+      color: "text-success",
+      bg: "bg-success/10",
+    },
+    {
+      title: "Active Udhaar Accounts",
+      value: String(dashboardStats?.activeCustomers || 0),
+      subtitle: "Customers with balance",
+      icon: Users,
       color: "text-primary",
+      bg: "bg-primary/10",
     },
     {
       title: "Low Stock Items",
       value: String(summary?.low ?? 0),
-      change: "",
-      trend: "up",
-      icon: AlertTriangle,
+      subtitle: "Need reordering",
+      icon: Package,
       color: "text-warning",
-    },
-    {
-      title: "Good Stock",
-      value: String(summary?.good ?? 0),
-      change: "",
-      trend: "up",
-      icon: DollarSign,
-      color: "text-success",
-    },
-    {
-      title: "Out of Stock",
-      value: String(summary?.out ?? 0),
-      change: "",
-      trend: "down",
-      icon: ShoppingCart,
-      color: "text-secondary",
+      bg: "bg-warning/10",
     },
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in pb-20 md:pb-0">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            Dashboard
+            Udhaar & Sales
           </h1>
           <p className="text-muted-foreground text-sm md:text-base">
-            Welcome back! Here&apos;s your store overview.
+            Overview of your daily shop workflow
           </p>
         </div>
-        <Button className="bg-primary hover:bg-primary/90 w-full sm:w-auto">
-          <Eye className="h-4 w-4 mr-2" />
-          View Reports
-        </Button>
+      </div>
+
+      {/* Main Quick Actions (Super Prominent) */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <Link href="/sales" className="col-span-2 md:col-span-1">
+          <Button
+            className="w-full h-16 md:h-24 flex flex-col gap-1 md:gap-2 text-sm md:text-base bg-primary hover:bg-primary/90 text-primary-foreground shadow-glow touch-manipulation"
+          >
+            <ShoppingCart className="h-6 w-6" />
+            <span className="font-semibold">New Sale</span>
+          </Button>
+        </Link>
+        <Link href="/customers" className="col-span-2 md:col-span-1">
+          <Button
+            variant="outline"
+            className="w-full h-16 md:h-24 flex flex-col gap-1 md:gap-2 text-sm md:text-base border-success text-success hover:bg-success/10 touch-manipulation"
+          >
+            <CreditCard className="h-6 w-6" />
+            <span className="font-semibold">Receive Payment</span>
+          </Button>
+        </Link>
+        <Link href="/customers" className="col-span-1">
+          <Button
+            variant="outline"
+            className="w-full h-16 md:h-24 flex flex-col gap-1 md:gap-2 text-xs md:text-sm touch-manipulation"
+          >
+            <PlusCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+            <span>Add Customer</span>
+          </Button>
+        </Link>
+        <Link href="/products" className="col-span-1">
+          <Button
+            variant="outline"
+            className="w-full h-16 md:h-24 flex flex-col gap-1 md:gap-2 text-xs md:text-sm touch-manipulation"
+          >
+            <Package className="h-5 w-5 md:h-6 md:w-6 text-secondary" />
+            <span>Add Product</span>
+          </Button>
+        </Link>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {statsCards.map((stat, index) => (
           <Card
             key={stat.title}
-            className="animate-slide-up shadow-elegant hover:shadow-glow transition-all duration-300"
+            className="animate-slide-up shadow-elegant hover:shadow-md transition-all duration-300"
             style={{ animationDelay: `${index * 100}ms` }}
           >
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {stat.title}
-              </CardTitle>
-              <stat.icon className={`h-5 w-5 ${stat.color}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">
-                {stat.value}
+            <CardContent className="p-4 md:p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className={`p-2 rounded-lg ${stat.bg}`}>
+                  <stat.icon className={`h-5 w-5 md:h-6 md:w-6 ${stat.color}`} />
+                </div>
               </div>
-              <div className="flex items-center gap-1 text-xs">
-                {stat.trend === "up" ? (
-                  <TrendingUp className="h-4 w-4 text-success" />
-                ) : (
-                  <TrendingDown className="h-4 w-4 text-destructive" />
-                )}
-                <span
-                  className={
-                    stat.trend === "up" ? "text-success" : "text-destructive"
-                  }
-                >
-                  {stat.change}
-                </span>
-                <span className="text-muted-foreground">from last month</span>
+              <div className="space-y-1">
+                <h3 className="text-sm font-medium text-muted-foreground line-clamp-1">
+                  {stat.title}
+                </h3>
+                <div className="text-xl md:text-2xl font-bold text-foreground">
+                  {isLoadingStats && index < 3 ? "..." : stat.value}
+                </div>
+                <p className="text-xs text-muted-foreground line-clamp-1">
+                  {stat.subtitle}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -130,168 +167,94 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-        {/* Expiring Items */}
+        {/* Pending Udhaar Customers */}
         <Card className="animate-slide-up shadow-elegant">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-warning" />
-              Expiring Soon
-            </CardTitle>
-            <CardDescription>Items expiring in the next 7 days</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-destructive" />
+                Pending Udhaar
+              </CardTitle>
+              <CardDescription>Customers with highest unpaid balance</CardDescription>
+            </div>
+            <Link href="/customers">
+              <Button variant="ghost" size="sm" className="hidden sm:flex">
+                View All
+              </Button>
+            </Link>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {isLoadingExpiring && (
+              {isLoadingCustomers && (
                 <div className="text-sm text-muted-foreground">
-                  Loading expiring items...
+                  Loading customers...
                 </div>
               )}
-              {!isLoadingExpiring && (
+              {!isLoadingCustomers && (
                 <>
-                  {expiringItems.length > 0 ? (
-                    (expiringItems as any[]).map((item: any, index: number) => (
+                  {pendingUdhaarCustomers.length > 0 ? (
+                    pendingUdhaarCustomers.map((customer: any, index: number) => (
                       <div
-                        key={index}
-                        className="flex items-center justify-between p-3 bg-accent/50 rounded-lg"
+                        key={customer._id}
+                        className="flex items-center justify-between p-3 bg-accent/50 rounded-lg hover:bg-accent transition-colors cursor-pointer"
                       >
                         <div className="flex-1">
-                          <p className="font-medium text-sm">{item.name}</p>
+                          <p className="font-medium text-sm">{customer.name}</p>
                           <p className="text-xs text-muted-foreground">
-                            Stock: {item.stock} units
+                            {customer.phone || "No phone"}
                           </p>
                         </div>
                         <div className="text-right">
-                          <Badge
-                            variant={
-                              (item.daysLeft ?? 0) <= 3
-                                ? "destructive"
-                                : "secondary"
-                            }
-                            className="text-xs"
-                          >
-                            {item.daysLeft} days left
-                          </Badge>
+                          <p className="font-bold text-destructive text-sm">
+                            ₹{customer.totalUdhaar}
+                          </p>
                           <p className="text-xs text-muted-foreground mt-1">
-                            {String(item.expiryDate).slice(0, 10)}
+                            Pending
                           </p>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className="text-sm text-muted-foreground min-h-[150px] text-center items-center flex justify-center">
-                      No expiring items
+                    <div className="text-sm text-muted-foreground min-h-[150px] text-center items-center flex justify-center bg-accent/30 rounded-lg border border-dashed border-border">
+                      No pending udhaar! All clear.
                     </div>
                   )}
                 </>
               )}
             </div>
-            <Button variant="outline" className="w-full mt-4 ">
-              View All Expiring Items
-            </Button>
+            <Link href="/customers">
+              <Button variant="outline" className="w-full mt-4 sm:hidden">
+                View All Customers
+              </Button>
+            </Link>
           </CardContent>
         </Card>
 
-        {/* Low Stock Items */}
-        <Card className="animate-slide-up shadow-elegant">
+        {/* Quick Help / Next Steps */}
+        <Card className="animate-slide-up shadow-elegant bg-primary/5 border-primary/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-warning" />
-              Low Stock Alert
+            <CardTitle className="flex items-center gap-2 text-primary">
+              <Eye className="h-5 w-5" />
+              Getting Started
             </CardTitle>
-            <CardDescription>Items running low on inventory</CardDescription>
+            <CardDescription>How to use your new Udhaar system</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {isLoadingInventory && (
-                <div className="text-sm text-muted-foreground">
-                  Loading low stock...
-                </div>
-              )}
-              {!isLoadingInventory && (
-                <>
-                  {stockItems.length > 0 ? (
-                    (stockItems as any[])
-                      .filter(
-                        (i: any) => i.status === "low" || i.status === "out"
-                      )
-                      .slice(0, 5)
-                      .map((item: any, index: number) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between p-3 bg-accent/50 rounded-lg"
-                        >
-                          <div className="flex-1">
-                            <p className="font-medium text-sm">{item.name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {item.category}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <Badge variant="outline" className="text-xs">
-                              {item.currentStock}/{item.minStock}
-                            </Badge>
-                            <p className="text-xs text-warning mt-1">
-                              Reorder needed
-                            </p>
-                          </div>
-                        </div>
-                      ))
-                  ) : (
-                    <div className="text-sm text-muted-foreground min-h-[150px] text-center items-center flex justify-center">
-                      No low stock items
-                    </div>
-                  )}
-                </>
-              )}
+          <CardContent className="space-y-4 text-sm text-muted-foreground">
+            <div className="flex gap-3">
+              <div className="mt-0.5 bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center font-bold shrink-0">1</div>
+              <p>Click <strong>New Sale</strong> to select products and choose a customer. You can split the bill into Paid and Udhaar instantly.</p>
             </div>
-            <Button variant="outline" className="w-full mt-4">
-              View All Low Stock
-            </Button>
+            <div className="flex gap-3">
+              <div className="mt-0.5 bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center font-bold shrink-0">2</div>
+              <p>When a customer pays their Udhaar, click <strong>Receive Payment</strong> to log the transaction and update their balance.</p>
+            </div>
+            <div className="flex gap-3">
+              <div className="mt-0.5 bg-primary/20 text-primary rounded-full w-6 h-6 flex items-center justify-center font-bold shrink-0">3</div>
+              <p>Check the <strong>Customers</strong> tab to see chronological ledger books for every person.</p>
+            </div>
           </CardContent>
         </Card>
       </div>
-
-      {/* Quick Actions */}
-      <Card className="animate-slide-up shadow-elegant">
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-          <CardDescription>
-            Frequently used actions for faster workflow
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-            <Button
-              variant="outline"
-              className="h-16 md:h-20 flex flex-col gap-1 md:gap-2 text-xs md:text-sm touch-manipulation"
-            >
-              <Package className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-              <span>Add Product</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="h-16 md:h-20 flex flex-col gap-1 md:gap-2 text-xs md:text-sm touch-manipulation"
-            >
-              <ShoppingCart className="h-5 w-5 md:h-6 md:w-6 text-secondary" />
-              <span>New Sale</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="h-16 md:h-20 flex flex-col gap-1 md:gap-2 text-xs md:text-sm touch-manipulation"
-            >
-              <AlertTriangle className="h-5 w-5 md:h-6 md:w-6 text-warning" />
-              <span>Stock Update</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="h-16 md:h-20 flex flex-col gap-1 md:gap-2 text-xs md:text-sm touch-manipulation"
-            >
-              <DollarSign className="h-5 w-5 md:h-6 md:w-6 text-success" />
-              <span>Reports</span>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

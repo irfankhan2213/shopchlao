@@ -3,6 +3,11 @@ import { Report } from '../../types/app';
 
 const API_URL = '/reports';
 
+export async function getDashboardStats(): Promise<any> {
+  const res = await axiosInstance.get(`${API_URL}/dashboard`);
+  return res.data;
+}
+
 export async function getReports(): Promise<Report[]> {
   const res = await axiosInstance.get(API_URL);
   return res.data;
