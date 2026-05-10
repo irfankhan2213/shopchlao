@@ -43,15 +43,15 @@ export type Customer = {
 };
 
 export type SaleItem = {
-  productId: number;
+  productId: string;
   name: string;
   qty: number;
   price: number;
 };
 
 export type Sale = {
-  id: number;
-  customerId?: number;
+  id: string;
+  customerId?: string;
   customerName?: string;
   items: SaleItem[];
   total: number;

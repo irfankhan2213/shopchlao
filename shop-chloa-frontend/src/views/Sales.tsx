@@ -142,7 +142,7 @@ export default function Sales() {
       paymentMethod: currentPaid > 0 ? "Cash" : "Credit",
     };
 
-    saleMutation.mutate(payload);
+    saleMutation.mutate(payload as any);
   };
 
   return (
