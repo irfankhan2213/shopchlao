@@ -7,12 +7,15 @@ import {
   Minus,
   Trash2,
   User,
-  CreditCard
+  CreditCard,
+  Package,
+  AlertTriangle
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProducts } from "@/services/ApiServices/products";
 import { getCustomers } from "@/services/ApiServices/customers";
