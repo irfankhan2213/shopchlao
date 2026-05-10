@@ -14,6 +14,10 @@ export interface ICustomer extends Document {
   phone?: string;
   address?: string;
   attachments?: IAttachment[];
+  totalSpent: number;
+  totalPaid: number;
+  totalUdhaar: number;
+  lastPurchaseDate?: Date;
 }
 
 const AttachmentSchema = new Schema<IAttachment>({
@@ -28,7 +32,11 @@ const CustomerSchema = new Schema<ICustomer>({
   email: String,
   phone: String,
   address: String,
-  attachments: { type: [AttachmentSchema], default: [] }
+  attachments: { type: [AttachmentSchema], default: [] },
+  totalSpent: { type: Number, default: 0 },
+  totalPaid: { type: Number, default: 0 },
+  totalUdhaar: { type: Number, default: 0 },
+  lastPurchaseDate: { type: Date }
 });
 
 export default mongoose.models.Customer || mongoose.model<ICustomer>('Customer', CustomerSchema);

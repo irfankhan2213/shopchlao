@@ -2,7 +2,44 @@
 import { Router } from 'express';
 import Report from '../models/Report';
 import { authenticateToken } from '../middleware/authMiddleware';
+import Customer from '../models/Customer';
+import Sale from '../models/Sale';
+
 const router = Router();
+
+// Get dashboard stats
+router.get('/dashboard', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    // Total pending udhaar
+    const customers = await Customer.find({ userId });
+    const totalUdhaar = customers.reduce((sum, c) => sum + (c.totalUdhaar || 0), 0);
+    
+    // Today's sales
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+    
+    // Assuming sales don't natively have userId yet (or do they?), let's fetch sales where customerId is in our list
+    const customerIds = customers.map(c => c._id);
+    const todaysSales = await Sale.find({ 
+      customerId: { $in: customerIds },
+      date: { $gte: startOfToday }
+    });
+    const todaysSalesTotal = todaysSales.reduce((sum, s) => sum + (s.total || 0), 0);
+    const todaysPaidTotal = todaysSales.reduce((sum, s) => sum + (s.paidAmount || 0), 0);
+    
+    res.json({
+      totalPendingUdhaar: totalUdhaar,
+      todaysSales: todaysSalesTotal,
+      todaysPaid: todaysPaidTotal,
+      activeCustomers: customers.filter(c => (c.totalUdhaar || 0) > 0).length
+    });
+  } catch (err) {
+    console.error('Failed to fetch dashboard stats', err);
+    res.status(500).json({ error: 'Failed to fetch dashboard stats' });
+  }
+});
 
 // Get all reports
 router.get('/', authenticateToken, async (req, res) => {

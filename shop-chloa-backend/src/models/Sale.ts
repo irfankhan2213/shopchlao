@@ -12,8 +12,11 @@ export interface ISale extends Document {
   customerName?: string;
   items: ISaleItem[];
   total: number;
+  paidAmount: number;
+  udhaarAmount: number;
   paymentMethod: string;
   date: Date;
+  attachments?: string[];
 }
 
 const SaleItemSchema = new Schema<ISaleItem>({
@@ -28,8 +31,11 @@ const SaleSchema = new Schema<ISale>({
   customerName: String,
   items: { type: [SaleItemSchema], default: [] },
   total: Number,
+  paidAmount: { type: Number, default: 0 },
+  udhaarAmount: { type: Number, default: 0 },
   paymentMethod: String,
-  date: { type: Date, default: Date.now }
+  date: { type: Date, default: Date.now },
+  attachments: { type: [String], default: [] }
 });
 
 export default mongoose.models.Sale || mongoose.model<ISale>('Sale', SaleSchema);

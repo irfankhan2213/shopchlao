@@ -12,6 +12,8 @@ import settingsRoutes from './routes/settings';
 import categoryRoutes from './routes/categories';
 import brandRoutes from './routes/brands';
 import stockRoutes from './routes/stock';
+import paymentRoutes from './routes/payments';
+import ledgerRoutes from './routes/ledger';
 import cors from 'cors';
 
 const app = express();
@@ -34,6 +36,8 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/stock', stockRoutes);
+app.use('/api/payments', paymentRoutes);
+app.use('/api/ledger', ledgerRoutes);
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || '';
